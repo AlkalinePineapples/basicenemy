@@ -15,7 +15,6 @@ func _physics_process(delta):
 	match state:
 		IDLE:
 			speed = 300
-			$Range/CollisionShape2D.shape.radius = 170
 			velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 		MOVE:
 			var direction = to_local(navagent.get_next_path_position()).normalized()
@@ -50,6 +49,5 @@ func _on_range_body_entered(body):
 
 func _on_range_body_exited(body):
 	speed = 450
-	$Range/CollisionShape2D.shape.radius = 250
 	state = MOVE
 	target = null

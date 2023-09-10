@@ -1,0 +1,118 @@
+[gd_scene load_steps=13 format=3 uid="uid://bvm3btj1i2nop"]
+
+[ext_resource type="Script" path="res://Enemies/Basic/basic.gd" id="1_eqsg4"]
+[ext_resource type="Texture2D" uid="uid://8nkdf4cql5yo" path="res://Enemies/Basic/PHfeet3.png" id="1_nbtty"]
+[ext_resource type="Texture2D" uid="uid://dcb265l3rqpu3" path="res://Enemies/Basic/PHfeet4.png" id="2_u4ip7"]
+[ext_resource type="Texture2D" uid="uid://digy2imhbvk3g" path="res://Enemies/Basic/PHfeet2.png" id="3_dq1ap"]
+[ext_resource type="Texture2D" uid="uid://b10rotfbni8e5" path="res://Enemies/Basic/PHfeet5.png" id="4_8cyjw"]
+[ext_resource type="Texture2D" uid="uid://elpovc0gd2vh" path="res://Enemies/Basic/PHfeet.png" id="5_qinky"]
+[ext_resource type="Texture2D" uid="uid://b4q1shu4wict0" path="res://Enemies/Basic/PHbasic.png" id="6_me5qw"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jddci"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_nbtty")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_u4ip7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_dq1ap")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_u4ip7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_nbtty")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_8cyjw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_qinky")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_8cyjw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_nbtty")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 12.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_thc0c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_me5qw")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 12.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e5isy"]
+radius = 16.0
+height = 42.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_18eoi"]
+radius = 170.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7lln3"]
+size = Vector2(40, 55)
+
+[node name="basic" type="CharacterBody2D" node_paths=PackedStringArray("navagent")]
+collision_layer = 2
+collision_mask = 13
+script = ExtResource("1_eqsg4")
+navagent = NodePath("NavigationAgent2D")
+
+[node name="feet" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_jddci")
+animation = &"Idle"
+
+[node name="head" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_thc0c")
+animation = &"Idle"
+
+[node name="Marker2D" type="Marker2D" parent="head"]
+position = Vector2(77, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_e5isy")
+
+[node name="Range" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Range"]
+shape = SubResource("CircleShape2D_18eoi")
+debug_color = Color(0.984314, 0.854902, 0, 0.419608)
+
+[node name="Hitbox" type="Area2D" parent="."]
+modulate = Color(1, 0.129412, 0.129412, 1)
+collision_layer = 2
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("RectangleShape2D_7lln3")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+debug_enabled = true
+
+[node name="UpdateNav" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[connection signal="area_entered" from="Range" to="." method="_on_range_area_entered"]
+[connection signal="area_exited" from="Range" to="." method="_on_range_area_exited"]
+[connection signal="body_entered" from="Range" to="." method="_on_range_body_entered"]
+[connection signal="body_exited" from="Range" to="." method="_on_range_body_exited"]
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]
+[connection signal="timeout" from="UpdateNav" to="." method="_on_update_nav_timeout"]

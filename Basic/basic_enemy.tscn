@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://1aj2ahfj7rtv"]
+
+[ext_resource type="Script" path="res://Enemies/Basic/basic_enemy.gd" id="1_i586b"]
+[ext_resource type="PackedScene" uid="uid://bvm3btj1i2nop" path="res://Enemies/Basic/basic.tscn" id="1_ngu43"]
+[ext_resource type="Texture2D" uid="uid://bf26xfe1cuukc" path="res://icon.svg" id="2_414s4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nbxti"]
+size = Vector2(40, 40)
+
+[node name="BasicEnemy" type="Node2D"]
+script = ExtResource("1_i586b")
+
+[node name="basic" parent="." instance=ExtResource("1_ngu43")]
+
+[node name="TargetNode" type="Marker2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="TargetNode"]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("2_414s4")
+
+[node name="WallDetect" type="Area2D" parent="TargetNode"]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TargetNode/WallDetect"]
+shape = SubResource("RectangleShape2D_nbxti")
+
+[node name="PatrolTimer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[connection signal="body_entered" from="TargetNode/WallDetect" to="." method="_on_wall_detect_body_entered"]
+[connection signal="body_exited" from="TargetNode/WallDetect" to="." method="_on_wall_detect_body_exited"]
+[connection signal="timeout" from="PatrolTimer" to="." method="_on_patrol_timer_timeout"]
+
+[editable path="basic"]

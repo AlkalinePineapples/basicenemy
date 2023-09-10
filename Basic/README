@@ -1,0 +1,2 @@
+basic.gd is the CharacterBody2D
+basic_enemy.gd is the Node2D that contains the CharacterBody2D and the "target node"
